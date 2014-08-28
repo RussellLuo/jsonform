@@ -47,6 +47,7 @@ class JsonForm(object):
 
         self.validator = ExtendedDraft4Validator(self.schema)
         self.document = document
+        self._errors = None
 
     def is_valid(self):
         return not self.errors
@@ -58,16 +59,22 @@ class JsonForm(object):
         Also replace origin error messages with customized ones if
         `messages` is defined in the form class.
         """
-        messages = {}
-        if hasattr(self, 'messages'):
-            messages = self.messages
-            assert isinstance(messages, dict)
+        if self._errors is None:
+            messages = {}
+            if hasattr(self, 'messages'):
+                messages = self.messages
+                assert isinstance(messages, dict), \
+                       'form `messages` must be a dict'
 
-        _errors = {}
-        for error in self.validator.iter_errors(self.document):
-            data_path = '.'.join([str(path) for path in error.absolute_path])
-            schema_path = '.'.join([str(path)
-                                    for path in error.absolute_schema_path])
-            _errors[data_path] = messages.get(schema_path) or error.message
+            self._errors = {}
+            for error in self.validator.iter_errors(self.document):
+                data_path = '.'.join([
+                    str(path) for path in error.absolute_path
+                ])
+                schema_path = '.'.join([
+                    str(path) for path in error.absolute_schema_path
+                ])
+                self._errors[data_path] = (messages.get(schema_path) or
+                                           error.message)
 
-        return _errors
+        return self._errors
