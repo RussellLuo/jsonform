@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
-
-with open('README.md') as readme:
-    long_description = readme.read()
+description = 'Form validation for JSON-like data (i.e. document) in Python.'
 
 setup(
-    name='jsonform',
-    version='0.0.1',
+    name='JsonForm',
+    version='0.0.2',
     author='RussellLuo',
     author_email='luopeng.he@gmail.com',
-    description=long_description,
+    maintainer='RussellLuo',
+    maintainer_email='luopeng.he@gmail.com',
+    description=description,
     license='MIT',
-    long_description=long_description,
-    packages=['jsonform'],
+    long_description=description,
+    packages=find_packages(),
     url='https://github.com/RussellLuo/jsonform',
     install_requires=['jsonschema'],
 )
